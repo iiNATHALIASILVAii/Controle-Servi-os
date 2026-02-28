@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard Serviços — Login</title>
+  <style>
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#0b0f19; color:#e8eefc; }
+    .wrap { min-height:100vh; display:grid; place-items:center; padding:24px; }
+    .card { width:min(420px, 100%); background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.10); border-radius:16px; padding:18px; box-shadow: 0 18px 60px rgba(0,0,0,.35); }
+    h1 { margin:0 0 6px; font-size:18px; }
+    .sub { margin:0 0 16px; opacity:.8; font-size:13px; }
+    label { display:block; font-size:12px; opacity:.85; margin:10px 0 6px; }
+    input { width:100%; box-sizing:border-box; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); color:#e8eefc; outline:none; }
+    button { width:100%; margin-top:12px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.10); color:#e8eefc; cursor:pointer; font-weight:650; }
+    button:hover { background:rgba(255,255,255,.14); }
+    .row { display:flex; gap:10px; margin-top:10px; }
+    .row button { width:auto; flex:1; }
+    .msg { margin-top:12px; font-size:13px; opacity:.9; }
+    .ok { color:#9ef0b5; }
+    .err { color:#ff9aa2; }
+    .tiny { margin-top:12px; font-size:12px; opacity:.7; }
+    .pill { display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Entrar</h1>
+      <p class="sub">Login com email/senha (Supabase Auth).</p>
+
+      <label>Email</label>
+      <input id="email" type="email" placeholder="seuemail@dominio.com" />
+
+      <label>Senha</label>
+      <input id="password" type="password" placeholder="••••••••" />
+
+      <button id="btnLogin">Entrar</button>
+
+      <div class="row">
+        <button id="btnSignUp" title="Criar usuário no Supabase Auth">Criar conta</button>
+        <button id="btnReset" title="Enviar email de redefinição">Esqueci a senha</button>
+      </div>
+
+      <div id="msg" class="msg"></div>
+
+      <div class="tiny">
+        Signups Supabase. <span class="pill">mais seguro</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase via CDN (UMD) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Docs oficiais: instalar via CDN e uso do createClient -->
+  <!-- https://supabase.com/docs/reference/javascript/installing -->
+  <script>
+    // 1) COLOQUE AQUI os dados do seu projeto (Settings → API)
+    const SUPABASE_URL = "https://cqivhdtncczqusivydkp.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_vORmTkgLIbtGQWbU6reAKQ_FslPufXi";
+
+    const { createClient } = supabase; // UMD expõe global "supabase" :contentReference[oaicite:2]{index=2}
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const $ = (id) => document.getElementById(id);
+    const setMsg = (text, kind) => {
+      const el = $("msg");
+      el.textContent = text || "";
+      el.className = "msg " + (kind || "");
+    };
+
+    async function goIfLogged() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) window.location.href = "./dashboard.html";
+    }
+    goIfLogged();
+
+    $("btnLogin").addEventListener("click", async () => {
+      setMsg("");
+      const email = $("email").value.trim();
+      const password = $("password").value;
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password }); // :contentReference[oaicite:3]{index=3}
+      if (error) return setMsg(error.message, "err");
+
+      setMsg("Logado! Indo pro dashboard…", "ok");
+      window.location.href = "./dashboard.html";
+    });
+
+    $("btnSignUp").addEventListener("click", async () => {
+      setMsg("");
+      const email = $("email").value.trim();
+      const password = $("password").value;
+
+      const { data, error } = await sb.auth.signUp({ email, password }); // :contentReference[oaicite:4]{index=4}
+      if (error) return setMsg(error.message, "err");
+
+      setMsg("Conta criada! Se o projeto exigir confirmação por email, confirma e tenta logar. 😉", "ok");
+    });
+
+    $("btnReset").addEventListener("click", async () => {
+      setMsg("");
+      const email = $("email").value.trim();
+      if (!email) return setMsg("Coloca teu email aí primeiro 😄", "err");
+
+      const { error } = await sb.auth.resetPasswordForEmail(email);
+      if (error) return setMsg(error.message, "err");
+
+      setMsg("Se existir conta com esse email, vai chegar um link de redefinição.", "ok");
+    });
+  </script>
+</body>
+</html>

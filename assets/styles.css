@@ -1,0 +1,341 @@
+:root{
+  /* Brand */
+  --brand-900:#0e3b3a;
+  --brand-700:#135352;   /* teal */
+  --accent:#A3C72E;      /* lime */
+  --white:#ffffff;
+  --gray-200:#d9d9d9;
+  --gray-400:#9D9D9C;
+  --gray-700:#575756;
+
+  /* Dark UI */
+  --bg:#070a11;
+  --bg2:#0b0f19;
+  --surface:rgba(255,255,255,.05);
+  --surface2:rgba(255,255,255,.08);
+  --stroke:rgba(255,255,255,.10);
+  --stroke2:rgba(255,255,255,.14);
+  --text:#eaf2ff;
+  --muted:rgba(234,242,255,.72);
+
+  --shadow: 0 18px 60px rgba(0,0,0,.42);
+  --r12:12px;
+  --r16:16px;
+  --r20:20px;
+
+  --focus: 0 0 0 3px rgba(163,199,46,.22);
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1200px 800px at 15% -10%, rgba(19,83,82,.35), transparent 55%),
+              radial-gradient(900px 700px at 85% 0%, rgba(163,199,46,.18), transparent 55%),
+              linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+  color:var(--text);
+}
+
+a{ color:inherit; }
+
+.topbar{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:14px; flex-wrap:wrap;
+  padding:16px 18px;
+  background: rgba(11,15,25,.75);
+  backdrop-filter: blur(12px);
+  border-bottom:1px solid var(--stroke);
+}
+
+.brand{ display:flex; gap:12px; align-items:center; }
+.brandMark{
+  width:34px; height:34px; border-radius:12px;
+  background: linear-gradient(135deg, rgba(163,199,46,.95), rgba(19,83,82,.95));
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+.brandTitle{ font-weight:900; letter-spacing:.2px; }
+.brandSub{ font-size:12px; color:var(--muted); margin-top:2px; }
+
+.layout{
+  display:grid;
+  grid-template-columns: 310px 1fr;
+  gap:14px;
+  padding:14px 14px 40px;
+  max-width: 1400px;
+  margin:0 auto;
+}
+
+@media (max-width: 1100px){
+  .layout{ grid-template-columns: 1fr; }
+}
+
+.card{
+  background: var(--surface);
+  border: 1px solid var(--stroke);
+  border-radius: var(--r20);
+  box-shadow: var(--shadow);
+}
+
+.panel{
+  padding:14px;
+}
+
+.panelTitle{
+  font-weight:850;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:10px;
+}
+.panelHint{ font-size:12px; color:var(--muted); }
+
+.controls label{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  margin:10px 0 6px;
+}
+
+.input, select, textarea{
+  width:100%;
+  padding:10px 12px;
+  border-radius: var(--r12);
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  outline:none;
+}
+
+.input:focus, select:focus, textarea:focus{ box-shadow: var(--focus); border-color: rgba(163,199,46,.45); }
+
+/* Arruma o dropdown ilegível */
+select{
+  appearance:none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px);
+  background-size:6px 6px;
+  background-repeat:no-repeat;
+}
+
+/* Muitos browsers respeitam isso (já melhora MUITO) */
+select option{
+  background: #0b0f19;
+  color: var(--text);
+}
+
+/* Buttons */
+.btnRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+.btn{
+  padding:10px 12px;
+  border-radius: var(--r12);
+  border:1px solid var(--stroke);
+  background: rgba(255,255,255,.08);
+  color: var(--text);
+  cursor:pointer;
+  font-weight:750;
+}
+.btn:hover{ background: rgba(255,255,255,.12); border-color: var(--stroke2); }
+.btn:focus{ box-shadow: var(--focus); }
+
+.btnPrimary{
+  background: linear-gradient(135deg, rgba(163,199,46,.95), rgba(163,199,46,.70));
+  color:#08100a;
+  border-color: rgba(163,199,46,.55);
+}
+.btnPrimary:hover{ filter: brightness(1.03); }
+
+.btnGhost{
+  background: rgba(255,255,255,.06);
+}
+
+.badge{
+  display:inline-block;
+  padding:2px 8px;
+  border-radius: 999px;
+  border:1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  font-size:12px;
+  color: var(--muted);
+}
+
+/* Main */
+.main{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.kpis{
+  display:grid;
+  grid-template-columns: repeat(5, minmax(0,1fr));
+  gap:12px;
+  padding:12px;
+}
+
+@media (max-width: 1200px){
+  .kpis{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+
+.kpi{
+  padding:14px;
+  border-radius: var(--r20);
+  border:1px solid var(--stroke);
+  background: rgba(255,255,255,.05);
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  position:relative;
+  overflow:hidden;
+}
+.kpi::before{
+  content:"";
+  position:absolute; inset:-1px;
+  background: radial-gradient(500px 120px at 10% 0%, rgba(163,199,46,.16), transparent 60%),
+              radial-gradient(600px 140px at 90% 0%, rgba(19,83,82,.18), transparent 60%);
+  pointer-events:none;
+}
+.kpiLabel{ position:relative; font-size:12px; color: var(--muted); }
+.kpiValue{ position:relative; font-size:22px; font-weight:950; margin-top:6px; }
+.kpiFoot{ position:relative; font-size:12px; color: var(--muted); margin-top:6px; }
+
+.grid2{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap:12px;
+}
+
+@media (max-width: 1100px){
+  .grid2{ grid-template-columns:1fr; }
+}
+
+.chartCard{
+  padding:12px;
+}
+.chartTitle{
+  font-weight:850;
+  margin:4px 0 10px;
+}
+.chartHint{
+  font-size:12px;
+  color: var(--muted);
+  margin-top:-6px;
+}
+
+.tableCard{ padding:12px; }
+.tableHead{
+  display:flex; justify-content:space-between; align-items:end; gap:10px; flex-wrap:wrap;
+  margin-bottom:10px;
+}
+.tableTitle{ font-weight:900; }
+.tableHint{ font-size:12px; color:var(--muted); }
+
+.tableWrap{ overflow:auto; border-radius: var(--r16); border:1px solid var(--stroke); }
+table{ width:100%; border-collapse:collapse; min-width: 980px; }
+th,td{ padding:10px 10px; border-bottom:1px solid rgba(255,255,255,.08); font-size:13px; }
+th{ font-size:12px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
+tr:hover td{ background: rgba(255,255,255,.03); }
+
+.pill{
+  display:inline-block;
+  padding:2px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.10);
+  font-size:12px;
+  color: var(--muted);
+}
+
+/* Modal */
+.modalBg{
+  position:fixed; inset:0;
+  display:none;
+  place-items:center;
+  background: rgba(0,0,0,.78);
+  backdrop-filter: blur(8px);
+  padding:16px;
+  z-index:100;
+}
+.modal{
+  width: min(860px, 100%);
+  background: rgba(11,15,25,96);
+  border: 1px solid rgba(255,255,255,.14);
+}
+.modalInner{ padding:14px; }
+.modalTop{
+  display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+  margin-bottom:10px;
+}
+.modalTitle{ font-weight:950; }
+.formGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+@media (max-width: 900px){
+  .formGrid{ grid-template-columns: 1fr; }
+}
+.small{ font-size:12px; color: var(--muted); }
+
+/* ===== Command buttons (Ações) ===== */
+.cmdBar{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  align-items:center;
+}
+.cmdBtn{
+  width:36px;
+  height:32px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: rgba(234,242,255,.90);
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+}
+.cmdBtn svg{
+  width:18px; 
+  height: 18px;
+  display: block;
+}
+
+.cmdBtn:hover{ 
+    border-color: rgba(163,199,46,.30);
+    box-shadow: 0 0 0 3px rgba(163,199,46,.12);
+}
+.cmdBtn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+.cmdBtn.danger{
+    border-color: rgba(255,80,80,.25);
+    background: rgba(255,80,80,.10);
+}
+.cmdBtn.danger:hover{ 
+    border-color: rgba(255,80,80,.35);
+    box-shadow: 0 0 0 3px rgba(255,80,80,.12);
+}
+.statusPill{
+  display:inline-block;
+  padding:2px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  font-size:12px;
+  color: rgba(234,242,255,.75);
+}
+.statusPill.open{ border-color: rgba(163,199,46,.35); }
+.statusPill.closed{ border-color: rgba(157,157,156,.35); }
+
+#btnDelConfirm{
+  background: rgba(255,80,80,.14);
+  border-color: rgba(255,80,80,.25);
+  color: rgba(255,235,235,.95);
+}
+#btnDelConfirm:hover{
+  background: rgba(255,80,80,.18);
+  border-color: rgba(255,80,80,.35);
+}

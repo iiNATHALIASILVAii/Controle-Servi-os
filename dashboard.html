@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Controle Serviços</title>
+
+  <link rel="stylesheet" href="./assets/styles.css" />
+
+  <!-- Modal: Confirmar exclusão -->
+  <div class="modalBg" id="delBg">
+    <div class="card modal" style="width:min(620px,100%);">
+      <div class="modalInner">
+        <div class="modalTop">
+          <div class="modalTitle">Excluir serviço</div>
+          <button class="btn" id="btnDelClose" type="button">Fechar</button>
+        </div>
+
+        <div class="small" style="margin-bottom:10px;">
+          Isso vai <b>remover o serviço da lista</b> e registrar a justificativa.
+        </div>
+
+        <div class="card" style="padding:12px; border-radius:16px;">
+          <div class="small"><b>Serviço:</b> <span id="delSummary" class="badge">—</span></div>
+          <div class="small" style="margin-top:10px;">Justificativa (obrigatória):</div>
+          <textarea id="delReason" class="input" style="min-height:90px;" placeholder="Ex: previsão cancelada / duplicado / reagendado..."></textarea>
+          <div class="small" id="delMsg" style="margin-top:8px;"></div>
+        </div>
+
+        <div class="btnRow" style="justify-content:flex-end; margin-top:12px;">
+          <button class="btn" id="btnDelCancel" type="button">Cancelar</button>
+          <button class="btn btnPrimary" id="btnDelConfirm" type="button">Excluir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <style>
+    .btn[data-tab].active{
+      border-color: rgba(163,199,46,.55);
+      box-shadow: 0 0 0 3px rgba(163,199,46,.18);
+    }
+    /* modal mais legível */
+    .modalBg{ background: rgba(0,0,0,.78); backdrop-filter: blur(8px); }
+    .modal{ background: rgba(11,15,25,.96); border: 1px solid rgba(255,255,255,.14); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brandMark"></div>
+      <div>
+        <div class="brandTitle">Controle Serviços</div>
+        <div class="brandSub" id="who">carregando…</div>
+      </div>
+    </div>
+
+    <div class="btnRow" style="margin:0;">
+      <a class="btn btnGhost" href="./insights.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+        Insights
+      </a>
+      <button class="btn btnGhost" id="btnNew" type="button">+ Novo serviço</button>
+      <button class="btn btnGhost" id="logout" type="button">Sair</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="card panel">
+      <div class="panelTitle">
+        <span>Filtros</span>
+        <span class="badge" id="rowsBadge">0</span>
+      </div>
+      <div class="panelHint">Tudo que você filtrar aqui aplica no dashboard inteiro.</div>
+
+      <div class="controls" style="margin-top:10px;">
+        <label>Período (mês)</label>
+        <select id="monthFilter"></select>
+
+        <label>Técnico</label>
+        <select id="techFilter"></select>
+
+        <label>Tipo de serviço</label>
+        <select id="typeFilter"></select>
+
+        <label>Estado</label>
+        <select id="stateFilter"></select>
+
+        <!-- NOVOS filtros por código -->
+        <label>Cód Cliente (Protheus)</label>
+        <input class="input" id="clientCodeFilter" placeholder="Ex: 005259-01" />
+
+        <label>RD (código oportunidade)</label>
+        <input class="input" id="rdCodeFilter" placeholder="Ex: 251128" />
+
+        <label>Centro de custo (Protheus)</label>
+        <input class="input" id="ccFilter" placeholder="Ex: CC-00123" />
+
+        <label>Busca</label>
+        <input class="input" id="search" placeholder="Fazenda, cidade, oportunidade, notas…" />
+      </div>
+
+      <div class="btnRow">
+        <button class="btn" id="btnClear" type="button">Limpar filtros</button>
+        <button class="btn btnPrimary" id="btnExport" type="button">Exportar CSV</button>
+      </div>
+
+      <div class="small" style="margin-top:10px;">
+        Agora: filtro por <b>cód cliente</b>, <b>RD</b> e <b>centro de custo</b>.
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <section class="card kpis" id="kpiGrid"></section>
+
+      <section class="grid2">
+        <div class="card chartCard">
+          <div class="chartTitle">Disponível x Utilizado</div>
+          <div class="chartHint">Orçamento (líquido) vs Realizado por mês</div>
+          <canvas id="chartBudget"></canvas>
+        </div>
+
+        <div class="card chartCard">
+          <div class="chartTitle">Serviços por colaborador</div>
+          <div class="chartHint">Quantidade de serviços no período/filtragem atual</div>
+          <canvas id="chartTech"></canvas>
+        </div>
+
+        <div class="card chartCard" style="grid-column:1 / -1;">
+          <div class="chartTitle">Produtos realizados por colaborador</div>
+          <div class="chartHint">Stack por produto (quantidade)</div>
+          <canvas id="chartProducts"></canvas>
+        </div>
+
+        <div class="card chartCard">
+          <div class="chartTitle">Serviços por mês</div>
+          <div class="chartHint">Contagem de serviços por mês</div>
+          <canvas id="chartCountMonth"></canvas>
+        </div>
+
+        <div class="card chartCard">
+          <div class="chartTitle">Remotos por solução</div>
+          <div class="chartHint">Quantidade de atendimentos remotos</div>
+          <canvas id="chartRemote"></canvas>
+        </div>
+      </section>
+
+      <section class="card tableCard">
+        <div class="tableHead">
+          <div>
+            <div class="tableTitle">Detalhamento</div>
+            <div class="tableHint" id="rowCount">0 linhas</div>
+          </div>
+        </div>
+
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Cliente</th>
+                <th>RD</th>
+                <th>Fazenda</th>
+                <th>Cidade/UF</th>
+                <th>Serviço</th>
+                <th>BU</th>
+                <th>Orçamento</th>
+                <th>Realizado</th>
+                <th>Variação</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modalBg" id="modalBg">
+    <div class="card modal">
+      <div class="modalInner">
+        <div class="modalTop">
+          <div class="modalTitle">Serviço</div>
+          <button class="btn" id="btnClose" type="button">Fechar</button>
+        </div>
+
+        <!-- Tabs -->
+        <div style="display:flex; gap:10px; margin:10px 0 12px; flex-wrap:wrap;">
+          <button class="btn btnGhost active" type="button" data-tab="service">Serviço</button>
+          <button class="btn btnGhost" type="button" data-tab="products">Produtos</button>
+          <button class="btn btnGhost" type="button" data-tab="expenses">Despesas</button>
+          <button class="btn btnGhost" type="button" data-tab="farm">Fazenda</button>
+        </div>
+
+        <!-- Serviço -->
+        <div data-tab-panel="service">
+          <!-- hidden farm_id -->
+          <input id="f_farm_id" type="hidden" />
+
+          <div class="formGrid">
+            <div>
+              <label class="small">Data</label>
+              <input class="input" id="f_date" type="date" />
+            </div>
+
+            <div>
+              <label class="small">Técnico</label>
+              <input class="input" id="f_tech" placeholder="Ex: Nathalia" />
+            </div>
+
+            <div>
+              <label class="small">Cód Cliente (Protheus)</label>
+              <input class="input" id="f_client_code" placeholder="Ex: 005259-01" />
+            </div>
+
+            <div>
+              <label class="small">Oportunidade RD (nome completo)</label>
+              <input class="input" id="f_opportunity" placeholder="Ex: 251128 - OP. ASSISTIDA - ..." />
+            </div>
+
+            <div>
+              <label class="small">Fazenda (texto)</label>
+              <input class="input" id="f_farm" placeholder="Nome da fazenda" />
+            </div>
+
+            <div class="formGrid" style="grid-template-columns:1fr 120px; gap:10px;">
+              <div>
+                <label class="small">Cidade</label>
+                <input class="input" id="f_city" placeholder="Cidade" />
+              </div>
+              <div>
+                <label class="small">UF</label>
+                <input class="input" id="f_state" placeholder="UF" />
+              </div>
+            </div>
+
+            <div>
+              <label class="small">Tipo de serviço</label>
+              <input class="input" id="f_type" placeholder="Implantação / Treinamento / Operação Assistida" />
+            </div>
+
+            <div>
+              <label class="small">BU</label>
+              <input class="input" id="f_bu" placeholder="Pecuária Intensiva" />
+            </div>
+
+            <div>
+              <label class="small">Orçamento líquido</label>
+              <input class="input" id="f_budget" type="number" step="0.01" />
+            </div>
+
+            <div>
+              <label class="small">Realizado</label>
+              <input class="input" id="f_real" type="number" step="0.01" />
+            </div>
+          </div>
+
+         <div class="small" style="margin-top:10px;">
+            Se você cadastrar/selecionar a fazenda na aba <b>Fazenda</b>, eu preencho Nome/Cidade/UF e guardo o <b>farm_id</b>.
+        </div>
+
+          <!-- Status do serviço -->
+          <div class="card" style="padding:12px; margin-top:12px; border-radius:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+              <div class="small"><b>Status:</b> <span id="svcStatusPill" class="statusPill open">ABERTO</span></div>
+              <div class="btnRow" style="margin:0;">
+                <button class="btn btnGhost" type="button" id="btnCloseSvc">Fechar serviço</button>
+                <button class="btn btnGhost" type="button" id="btnReopenSvc">Reabrir serviço</button>
+              </div>
+            </div>
+            <div class="small" style="margin-top:10px;">Justificativa (obrigatória para fechar/reabrir):</div>
+            <textarea id="svcStatusReason" class="input" style="min-height:70px;" placeholder="Ex: Serviço foi previsto e cancelado / reagendado / ajustado..."></textarea>
+            <div class="small" id="svcStatusMsg" style="margin-top:8px;"></div>
+          </div>
+        </div>
+
+        <!-- Produtos -->
+        <div data-tab-panel="products" style="display:none;">
+          <div class="small"><b>Entregas no serviço</b> (quantidade por produto)</div>
+          <div id="prodRows" class="card" style="padding:10px; margin-top:8px; border-radius:16px;"></div>
+
+          <div class="btnRow" style="margin-top:10px;">
+            <button class="btn btnGhost" type="button" id="btnAddProd">+ Outro produto</button>
+          </div>
+          <div class="small">Preencha quantidade &gt; 0 para considerar.</div>
+        </div>
+
+        <!-- Despesas -->
+        <div data-tab-panel="expenses" style="display:none;">
+          <div class="small"><b>Despesas do serviço</b> (categoria + valor)</div>
+          <div id="expRows" class="card" style="padding:10px; margin-top:8px; border-radius:16px;"></div>
+
+          <div class="btnRow" style="margin-top:10px;">
+            <button class="btn btnGhost" type="button" id="btnAddExp">+ Nova despesa</button>
+          </div>
+          <div class="small">Categorias vêm de <b>expense_categories</b>.</div>
+        </div>
+
+        <!-- Fazenda -->
+        <div data-tab-panel="farm" style="display:none;">
+          <div class="small"><b>Vincular fazenda ao serviço</b> (ou cadastrar uma nova)</div>
+
+          <div class="formGrid" style="margin-top:10px;">
+            <div>
+              <label class="small">Buscar fazenda</label>
+              <input class="input" id="farmSearch" placeholder="Digite nome, cidade, UF, código..." />
+            </div>
+            <div>
+              <label class="small">Selecionar fazenda</label>
+              <select id="farmSelect" class="input"></select>
+            </div>
+          </div>
+
+          <div class="btnRow">
+            <button class="btn btnGhost" id="btnUseFarm" type="button">Usar esta fazenda no serviço</button>
+          </div>
+
+          <hr style="border:0;border-top:1px solid rgba(255,255,255,.10);margin:14px 0;">
+
+          <div class="small"><b>Cadastrar nova fazenda</b></div>
+
+          <div class="formGrid" style="margin-top:10px;">
+            <div>
+              <label class="small">Cód Cliente (Protheus)</label>
+              <input class="input" id="new_client_code" placeholder="Ex: 005259-01" />
+            </div>
+            <div>
+              <label class="small">Cód Fazenda (Protheus)</label>
+              <input class="input" id="new_farm_code" placeholder="Opcional" />
+            </div>
+
+            <div>
+              <label class="small">Nome Fazenda</label>
+              <input class="input" id="new_farm_name" placeholder="Ex: FAZENDA VISTA ALEGRE" />
+            </div>
+            <div>
+              <label class="small">Centro de custo (Protheus)</label>
+              <input class="input" id="new_cost_center" placeholder="Ex: CC-000123" />
+            </div>
+
+            <div>
+              <label class="small">Cidade</label>
+              <input class="input" id="new_city" placeholder="Cidade" />
+            </div>
+            <div>
+              <label class="small">UF</label>
+              <input class="input" id="new_state" placeholder="UF" />
+            </div>
+          </div>
+
+          <div class="btnRow" style="justify-content:flex-end;">
+            <button class="btn btnPrimary" id="btnSaveFarm" type="button">Salvar fazenda</button>
+          </div>
+
+          <div class="small" id="farmMsg"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="btnRow" style="justify-content:flex-end; margin-top:12px;">
+          <button class="btn btnPrimary" id="btnSave" type="button">Salvar serviço</button>
+        </div>
+
+        <div class="small" id="formMsg" style="margin-top:8px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="./assets/dashboard.js"></script>
+</body>
+</html>

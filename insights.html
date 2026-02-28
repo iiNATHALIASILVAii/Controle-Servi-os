@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Insights - Controle Serviços</title>
+
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brandMark"></div>
+      <div>
+        <div class="brandTitle">Insights</div>
+        <div class="brandSub" id="who">carregando…</div>
+      </div>
+    </div>
+
+    <div class="btnRow" style="margin:0;">
+      <a class="btn btnGhost" href="./dashboard.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+        ← Voltar pro Dashboard
+      </a>
+      <button class="btn btnGhost" id="logout" type="button">Sair</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- Sidebar filtros (igual do dashboard) -->
+    <aside class="card panel">
+      <div class="panelTitle">
+        <span>Filtros</span>
+        <span class="badge" id="rowsBadge">0</span>
+      </div>
+      <div class="panelHint">Os insights respeitam esses filtros.</div>
+
+      <div class="controls" style="margin-top:10px;">
+        <label>Período (mês)</label>
+        <select id="monthFilter"></select>
+
+        <label>Técnico</label>
+        <select id="techFilter"></select>
+
+        <label>Tipo de serviço</label>
+        <select id="typeFilter"></select>
+
+        <label>Estado</label>
+        <select id="stateFilter"></select>
+
+        <label>Cód Cliente (Protheus)</label>
+        <input class="input" id="clientCodeFilter" placeholder="Ex: 005259-01" />
+
+        <label>RD (código oportunidade)</label>
+        <input class="input" id="rdCodeFilter" placeholder="Ex: 251128" />
+
+        <label>Centro de custo (Protheus)</label>
+        <input class="input" id="ccFilter" placeholder="Ex: CC-00123" />
+
+        <label>Busca</label>
+        <input class="input" id="search" placeholder="Fazenda, cidade, oportunidade, notas…" />
+      </div>
+
+      <div class="btnRow">
+        <button class="btn" id="btnClear" type="button">Limpar filtros</button>
+        <button class="btn btnPrimary" id="btnExport" type="button">Exportar CSV (base dos insights)</button>
+      </div>
+
+      <div class="small" style="margin-top:10px;">
+        Rateio por produto: <b>proporcional à quantidade</b> (peso).
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- KPIs -->
+      <section class="card kpis" id="kpiGrid"></section>
+
+      <!-- Charts -->
+      <section class="grid2">
+        <div class="card chartCard">
+          <div class="chartTitle">Gastos por categoria</div>
+          <div class="chartHint">Quanto do custo está indo para combustível, passagem, etc.</div>
+          <canvas id="chartExpByCat"></canvas>
+        </div>
+
+        <div class="card chartCard">
+          <div class="chartTitle">Gastos por categoria ao longo do tempo</div>
+          <div class="chartHint">Stack por mês (tendências)</div>
+          <canvas id="chartExpCatMonth"></canvas>
+        </div>
+
+        <div class="card chartCard">
+          <div class="chartTitle">Custo por produto (rateado por quantidade)</div>
+          <div class="chartHint">Se um serviço tem 1 TGC e 3 automações, automação recebe 3x o peso</div>
+          <canvas id="chartCostByProduct"></canvas>
+        </div>
+
+        <div class="card chartCard">
+          <div class="chartTitle">Custo médio por tipo de serviço</div>
+          <div class="chartHint">Implantação costuma ser mais cara? Aqui aparece.</div>
+          <canvas id="chartAvgByType"></canvas>
+        </div>
+      </section>
+
+      <!-- Table -->
+      <section class="card tableCard">
+        <div class="tableHead">
+          <div>
+            <div class="tableTitle">Top serviços mais caros</div>
+            <div class="tableHint" id="rowCount">0 linhas</div>
+          </div>
+        </div>
+
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Cliente</th>
+                <th>RD</th>
+                <th>Fazenda</th>
+                <th>Serviço</th>
+                <th>Técnico</th>
+                <th>Custo</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyTop"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="./assets/insights.js"></script>
+</body>
+</html>
