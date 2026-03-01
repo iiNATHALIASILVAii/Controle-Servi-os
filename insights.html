@@ -6,6 +6,13 @@
   <title>Insights - Controle Serviços</title>
 
   <link rel="stylesheet" href="./assets/styles.css" />
+  <script>
+  (() => {
+    const saved = localStorage.getItem("theme");
+    const system = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    document.documentElement.dataset.theme = saved || system;
+  })();
+</script>
 </head>
 <body>
   <header class="topbar">
@@ -21,6 +28,7 @@
       <a class="btn btnGhost" href="./dashboard.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
         ← Voltar pro Dashboard
       </a>
+      <button class="btn btnGhost" id="themeToggle" type="button" title="Alternar tema"></button>
       <button class="btn btnGhost" id="logout" type="button">Sair</button>
     </div>
   </header>
@@ -132,6 +140,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="./assets/theme.js"></script>
   <script src="./assets/insights.js"></script>
 </body>
 </html>

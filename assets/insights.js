@@ -1,4 +1,4 @@
-// ====== CONFIG SUPABASE ======
+// ====== CONFIG ======
 const SUPABASE_URL = "https://cqivhdtncczqusivydkp.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_vORmTkgLIbtGQWbU6reAKQ_FslPufXi";
 // =======================================

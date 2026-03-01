@@ -6,7 +6,13 @@
   <title>Controle Serviços</title>
 
   <link rel="stylesheet" href="./assets/styles.css" />
-
+  <script>
+  (() => {
+    const saved = localStorage.getItem("theme");
+    const system = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    document.documentElement.dataset.theme = saved || system;
+  })();
+</script>
   <!-- Modal: Confirmar exclusão -->
   <div class="modalBg" id="delBg">
     <div class="card modal" style="width:min(620px,100%);">
@@ -59,6 +65,7 @@
       <a class="btn btnGhost" href="./insights.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
         Insights
       </a>
+      <button class="btn btnGhost" id="themeToggle" type="button" title="Alternar tema"></button>
       <button class="btn btnGhost" id="btnNew" type="button">+ Novo serviço</button>
       <button class="btn btnGhost" id="logout" type="button">Sair</button>
     </div>
@@ -370,6 +377,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="./assets/theme.js"></script>
   <script src="./assets/dashboard.js"></script>
 </body>
 </html>

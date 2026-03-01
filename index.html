@@ -50,16 +50,13 @@
     </div>
   </div>
 
-  <!-- Supabase via CDN (UMD) -->
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Docs oficiais: instalar via CDN e uso do createClient -->
-  <!-- https://supabase.com/docs/reference/javascript/installing -->
   <script>
-    // 1) COLOQUE AQUI os dados do seu projeto (Settings → API)
     const SUPABASE_URL = "https://cqivhdtncczqusivydkp.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_vORmTkgLIbtGQWbU6reAKQ_FslPufXi";
 
-    const { createClient } = supabase; // UMD expõe global "supabase" :contentReference[oaicite:2]{index=2}
+    const { createClient } = supabase; 
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const $ = (id) => document.getElementById(id);
@@ -92,7 +89,7 @@
       const email = $("email").value.trim();
       const password = $("password").value;
 
-      const { data, error } = await sb.auth.signUp({ email, password }); // :contentReference[oaicite:4]{index=4}
+      const { data, error } = await sb.auth.signUp({ email, password }); 
       if (error) return setMsg(error.message, "err");
 
       setMsg("Conta criada! Se o projeto exigir confirmação por email, confirma e tenta logar. 😉", "ok");
