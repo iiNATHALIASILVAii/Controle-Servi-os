@@ -361,3 +361,50 @@ tr:hover td{ background: rgba(255,255,255,.03); }
 
   --shadow: 0 18px 60px rgba(0,0,0,.15);
 }
+
+#themeToggle{
+  width:40px;
+  height:36px;
+  display:grid;
+  place-items:center;
+  padding:0;
+}
+#themeToggle svg{
+  width:18px;
+  height:18px;
+}
+
+/* ===== Light theme fixes: buttons, inputs, icons ===== */
+:root[data-theme="light"] .btn,
+:root[data-theme="light"] .btnGhost,
+:root[data-theme="light"] .cmdBtn{
+  background: rgba(0,0,0,.06);
+  border-color: rgba(0,0,0,.14);
+  color: rgba(11,18,32,.92);
+}
+
+:root[data-theme="light"] .btn:hover,
+:root[data-theme="light"] .btnGhost:hover,
+:root[data-theme="light"] .cmdBtn:hover{
+  background: rgba(0,0,0,.09);
+  border-color: rgba(0,0,0,.18);
+}
+
+:root[data-theme="light"] .cmdBtn.danger{
+  background: rgba(255,80,80,.10);
+  border-color: rgba(255,80,80,.28);
+  color: rgba(120,0,0,.90);
+}
+
+:root[data-theme="light"] .input{
+  background: rgba(255,255,255,.82);
+  border-color: rgba(0,0,0,.14);
+  color: rgba(11,18,32,.92);
+}
+
+:root[data-theme="light"] .pill,
+:root[data-theme="light"] .badge{
+  background: rgba(0,0,0,.06);
+  border-color: rgba(0,0,0,.12);
+  color: rgba(11,18,32,.82);
+}

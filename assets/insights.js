@@ -361,6 +361,11 @@ function bindEvents(){
   });
 }
 
+window.addEventListener("themechange", () => {
+  applyChartTheme();
+  rebuild(); // recria gráficos com novas cores
+});
+
 (async ()=>{
   await guard();
   bindEvents();

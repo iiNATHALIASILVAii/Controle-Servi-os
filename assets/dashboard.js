@@ -44,9 +44,19 @@ const COLORS = {
   white: "#FFFFFF",
 };
 
-Chart.defaults.color = "rgba(234,242,255,.78)";
 Chart.defaults.font.family = "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
 Chart.defaults.plugins.legend.labels.boxWidth = 12;
+
+function applyChartTheme(){
+  const theme = document.documentElement.dataset.theme || "dark";
+  const isLight = theme === "light";
+
+  Chart.defaults.color = isLight ? "rgba(11,18,32,.80)" : "rgba(234,242,255,.78)";
+  Chart.defaults.borderColor = isLight ? "rgba(11,18,32,.10)" : "rgba(255,255,255,.10)";
+  Chart.defaults.scale = Chart.defaults.scale || {};
+}
+
+applyChartTheme();
 
 function sum(arr) {
   return arr.reduce((a, b) => a + (Number(b) || 0), 0);
@@ -750,8 +760,8 @@ function renderCharts(d) {
       responsive: true,
       plugins: { legend: { position: "top" } },
       scales: {
-        x: { grid: { color: "rgba(255,255,255,.06)" } },
-        y: { grid: { color: "rgba(255,255,255,.06)" } },
+        x: { grid: { color: Chart.defaults.borderColor } },
+        y: { grid: { color: Chart.defaults.borderColor } },
       },
     },
   });
@@ -767,8 +777,8 @@ function renderCharts(d) {
       responsive: true,
       plugins: { legend: { display: false } },
       scales: {
-        x: { grid: { color: "rgba(255,255,255,.06)" } },
-        y: { grid: { color: "rgba(255,255,255,.06)" } },
+        x: { grid: { color: Chart.defaults.borderColor } },
+        y: { grid: { color: Chart.defaults.borderColor } },
       },
     },
   });
@@ -781,8 +791,8 @@ function renderCharts(d) {
       responsive: true,
       plugins: { legend: { position: "bottom" } },
       scales: {
-        x: { stacked: true, grid: { color: "rgba(255,255,255,.06)" } },
-        y: { stacked: true, grid: { color: "rgba(255,255,255,.06)" } },
+        x: { stacked: true, grid: { color: Chart.defaults.borderColor } },
+        y: { stacked: true, grid: { color: Chart.defaults.borderColor } },
       },
     },
   });
@@ -798,8 +808,8 @@ function renderCharts(d) {
       responsive: true,
       plugins: { legend: { display: false } },
       scales: {
-        x: { grid: { color: "rgba(255,255,255,.06)" } },
-        y: { grid: { color: "rgba(255,255,255,.06)" } },
+        x: { grid: { color: Chart.defaults.borderColor } },
+        y: { grid: { color: Chart.defaults.borderColor } },
       },
     },
   });
@@ -815,8 +825,8 @@ function renderCharts(d) {
       responsive: true,
       plugins: { legend: { display: false } },
       scales: {
-        x: { grid: { color: "rgba(255,255,255,.06)" } },
-        y: { grid: { color: "rgba(255,255,255,.06)" } },
+        x: { grid: { color: Chart.defaults.borderColor } },
+        y: { grid: { color: Chart.defaults.borderColor } },
       },
     },
   });
@@ -1279,6 +1289,11 @@ function bindEvents() {
 // -----------------------------
 // START
 // -----------------------------
+window.addEventListener("themechange", () => {
+  applyChartTheme();
+  rebuild(); // recria gráficos com novas cores
+});
+
 (async () => {
   await guard();
   Tabs = initTabs();

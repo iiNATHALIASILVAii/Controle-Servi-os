@@ -9,10 +9,9 @@
   <script>
   (() => {
     const saved = localStorage.getItem("theme");
-    const system = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-    document.documentElement.dataset.theme = saved || system;
+    document.documentElement.dataset.theme = saved || "dark";
   })();
-</script>
+  </script>
   <!-- Modal: Confirmar exclusão -->
   <div class="modalBg" id="delBg">
     <div class="card modal" style="width:min(620px,100%);">
