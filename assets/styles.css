@@ -454,3 +454,66 @@ tr:hover td{ background: rgba(255,255,255,.03); }
   border-color: rgba(163,199,46,.55);
   box-shadow: 0 0 0 3px rgba(163,199,46,.18);
 }
+
+/* ===== Select (dropdown) fix - melhora no dark/light ===== */
+select.input,
+.panel select,
+.modal select{
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, rgba(234,242,255,.75) 50%),
+    linear-gradient(135deg, rgba(234,242,255,.75) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 2px),
+    calc(100% - 12px) calc(50% - 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+select option{
+  background: #0b0f19;
+  color: rgba(234,242,255,.92);
+}
+
+/* Tema claro: dropdown ainda escuro */
+:root[data-theme="light"] select option{
+  background: #0b0f19;
+  color: rgba(234,242,255,.92);
+}
+
+:root[data-theme="light"] select.input,
+:root[data-theme="light"] .panel select{
+  background-color: rgba(255,255,255,.82);
+  border-color: rgba(0,0,0,.14);
+  color: rgba(11,18,32,.92);
+}
+
+/* Dentro do modal: sempre dark (reforço) */
+:root[data-theme="light"] .modal select{
+  background-color: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.14);
+  color: rgba(234,242,255,.92);
+}
+
+select{
+  max-height: 280px; 
+}
+
+/* ===== Fix: labels dos produtos no modal ===== */
+#prodRows .badge{
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.16);
+  color: rgba(234,242,255,.92);
+  font-weight: 600;
+  border-radius: 12px;
+  min-height: 38px;
+}
+
+:root[data-theme="light"] #prodRows .badge{
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.16);
+  color: rgba(234,242,255,.92);
+}

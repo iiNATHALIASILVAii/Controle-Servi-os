@@ -273,6 +273,7 @@ function renderProductPicker(existing = []) {
     row.style.gridTemplateColumns = "1fr 120px";
     row.style.gap = "10px";
     row.style.marginBottom = "8px";
+    row.style.alignItems = "center";
     row.dataset.custom = "0";
 
     row.innerHTML = `
@@ -288,6 +289,7 @@ function renderProductPicker(existing = []) {
     row.style.gridTemplateColumns = "1fr 120px 44px";
     row.style.gap = "10px";
     row.style.marginBottom = "8px";
+    row.style.alignItems = "center";
     row.dataset.custom = "1";
 
     row.innerHTML = `
