@@ -408,3 +408,49 @@ tr:hover td{ background: rgba(255,255,255,.03); }
   border-color: rgba(0,0,0,.12);
   color: rgba(11,18,32,.82);
 }
+
+:root[data-theme="light"] .modal .btn[data-tab].active{
+  border-color: rgba(163,199,46,.55);
+  box-shadow: 0 0 0 3px rgba(163,199,46,.18);
+}
+
+/* ===== Modais SEMPRE dark (mesmo no tema light) ===== */
+:root[data-theme="light"] .modalBg{
+  background: rgba(0,0,0,.78);
+  backdrop-filter: blur(8px);
+}
+
+:root[data-theme="light"] .modal{
+  background: rgba(11,15,25,.96);
+  border: 1px solid rgba(255,255,255,.14);
+  color: rgba(234,242,255,.90);
+}
+
+/* Inputs dentro do modal continuam dark */
+:root[data-theme="light"] .modal .input{
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.14);
+  color: rgba(234,242,255,.92);
+}
+
+:root[data-theme="light"] .modal .small,
+:root[data-theme="light"] .modal label{
+  color: rgba(234,242,255,.72);
+}
+
+/* Botões dentro do modal continuam dark */
+:root[data-theme="light"] .modal .btn,
+:root[data-theme="light"] .modal .btnGhost{
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.14);
+  color: rgba(234,242,255,.92);
+}
+:root[data-theme="light"] .modal .btn:hover,
+:root[data-theme="light"] .modal .btnGhost:hover{
+  background: rgba(255,255,255,.10);
+}
+
+:root[data-theme="light"] .modal .btn[data-tab].active{
+  border-color: rgba(163,199,46,.55);
+  box-shadow: 0 0 0 3px rgba(163,199,46,.18);
+}
