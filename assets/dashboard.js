@@ -79,6 +79,12 @@ async function guard() {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) window.location.href = "./index.html";
   $("who").textContent = `Logado como: ${session.user?.email || "(sem email)"}`;
+
+  const adminLink = document.getElementById("adminLink");
+  if (adminLink){
+    const { data: isAdmin, error } = await sb.rpc("is_admin");
+    if (!error && isAdmin === true) adminLink.style.display = "inline-flex";
+  }
 }
 
 // -----------------------------
@@ -883,6 +889,26 @@ function clearForm() {
   renderExpensePicker([]);
 }
 
+function parsePt(v){
+  if(v == null) return null;
+  const s = String(v).trim().replace(/\./g, "").replace(",", ".");
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+
+function calcNet(gross, taxPct){
+  if(gross == null) return null;
+  const t = taxPct == null ? 0 : taxPct;
+  return gross * (1 - (t/100));
+}
+
+function updateBudgetNetUI(){
+  const gross = parsePt($("f_gross")?.value);
+  const tax = parsePt($("f_tax")?.value);
+  const net = calcNet(gross, tax);
+  if($("f_budget")) $("f_budget").value = net == null ? "" : net.toFixed(2).replace(".", ",");
+}
+
 function openNew() {
   EDIT_ID = null;
   clearForm();
@@ -908,6 +934,14 @@ function openEdit(id) {
   $("f_bu").value = svc.bu || "";
   $("f_budget").value = svc.budget_net ?? "";
   $("f_real").value = svc.realized ?? "";
+  $("f_exec").value = "Presencial";
+  $("f_train_hours").value = "";
+  $("f_travel_hours").value = "";
+  $("f_on_site_days").value = "";
+  $("f_remote_hours").value = "";
+  $("timePresencialFields").style.display = "";
+  $("timeRemotoFields").style.display = "none";
+  updateBudgetNetUI();
 
   renderProductPicker(svc.service_products || []);
   renderExpensePicker(svc.service_expenses || []);
@@ -953,6 +987,20 @@ function openDetail(id) {
   // Reaproveita o modal: só “bloqueia” inputs e esconde salvar
   openEdit(id);
 
+  $("f_exec").value = svc.execution_type || "Presencial";
+  $("f_train_hours").value = svc.training_hours ?? "";
+  $("f_travel_hours").value = svc.travel_hours ?? "";
+  $("f_on_site_days").value = svc.on_site_days ?? "";
+  $("f_remote_hours").value = svc.remote_hours ?? "";
+
+  $("f_gross").value = (svc.gross_value ?? "") === "" ? "" : String(svc.gross_value).replace(".", ",");
+  $("f_tax").value = (svc.tax_value ?? "") === "" ? "" : String(svc.tax_value).replace(".", ",");
+
+  $("timePresencialFields").style.display = ($("f_exec").value === "Presencial") ? "" : "none";
+  $("timeRemotoFields").style.display = ($("f_exec").value === "Remoto") ? "" : "none";
+
+  updateBudgetNetUI();
+  
   // bloquear campos (menos botões de status e fechar)
   const modal = $("modalBg");
   modal.querySelectorAll("input, select, textarea").forEach((el) => {
@@ -1101,8 +1149,14 @@ async function saveService() {
     state: ($("f_state").value || "").trim() || null,
     service_type: ($("f_type").value || "").trim() || null,
     bu: ($("f_bu").value || "").trim() || null,
-    budget_net: $("f_budget").value ? Number($("f_budget").value) : null,
-    realized: $("f_real").value ? Number($("f_real").value) : null,
+    execution_type: $("f_exec").value || null,
+    training_hours: parsePt($("f_train_hours").value),
+    travel_hours: parsePt($("f_travel_hours").value),
+    on_site_days: parsePt($("f_on_site_days").value),
+    remote_hours: parsePt($("f_remote_hours").value),
+    gross_value: parsePt($("f_gross").value),
+    tax_value: parsePt($("f_tax").value),
+    realized: parsePt($("f_real").value)
   };
 
   let serviceId = EDIT_ID;
@@ -1257,6 +1311,15 @@ function bindEvents() {
     if (e.target.id === "modalBg") closeModal();
   });
   $("btnSave").addEventListener("click", saveService);
+
+  $("f_gross")?.addEventListener("input", updateBudgetNetUI);
+  $("f_tax")?.addEventListener("input", updateBudgetNetUI);
+
+  $("f_exec")?.addEventListener("change", () => {
+    const v = $("f_exec").value;
+    $("timePresencialFields").style.display = (v === "Presencial") ? "" : "none";
+    $("timeRemotoFields").style.display = (v === "Remoto") ? "" : "none";
+  });
 
   // status open/close
   $("btnCloseSvc").addEventListener("click", closeCurrentService);

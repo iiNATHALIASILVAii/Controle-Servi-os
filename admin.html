@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin - Controle Serviços</title>
+
+  <link rel="stylesheet" href="./assets/styles.css" />
+  <script>
+    (() => {
+      const saved = localStorage.getItem("theme");
+      document.documentElement.dataset.theme = saved || "dark";
+    })();
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brandMark"></div>
+      <div>
+        <div class="brandTitle">Admin</div>
+        <div class="brandSub" id="who">carregando…</div>
+      </div>
+    </div>
+
+    <div class="btnRow" style="margin:0;">
+      <a class="btn btnGhost" href="./dashboard.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+        ← Dashboard
+      </a>
+      <button class="btn btnGhost" id="themeToggle" type="button" title="Alternar tema"></button>
+      <button class="btn btnGhost" id="logout" type="button">Sair</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="card panel">
+      <div class="panelTitle">
+        <span>Usuários & Permissões</span>
+        <span class="badge" id="rowsBadge">0</span>
+      </div>
+      <div class="panelHint">Só admins conseguem ver/alterar aqui.</div>
+
+      <div class="controls" style="margin-top:10px;">
+        <label>Buscar</label>
+        <input class="input" id="search" placeholder="email, nome, role…" />
+      </div>
+
+      <div class="btnRow">
+        <button class="btn" id="btnReload" type="button">Atualizar</button>
+      </div>
+
+      <div class="small" id="msg" style="margin-top:10px;"></div>
+    </aside>
+
+    <main class="main">
+      <section class="card tableCard">
+        <div class="tableHead">
+          <div>
+            <div class="tableTitle">Lista de usuários</div>
+            <div class="tableHint">Marque/desmarque roles e ele já salva.</div>
+          </div>
+        </div>
+
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Nome</th>
+                <th>Roles (atual)</th>
+                <th style="min-width:320px;">Permissões</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyUsers"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./assets/theme.js"></script>
+  <script src="./assets/admin.js"></script>
+</body>
+</html>

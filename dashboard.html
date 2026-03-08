@@ -64,6 +64,10 @@
       <a class="btn btnGhost" href="./insights.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
         Insights
       </a>
+        <a class="btn btnGhost" id="adminLink" href="./admin.html"
+          style="display:none; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+          Admin
+        </a>
       <button class="btn btnGhost" id="themeToggle" type="button" title="Alternar tema"></button>
       <button class="btn btnGhost" id="btnNew" type="button">+ Novo serviço</button>
       <button class="btn btnGhost" id="logout" type="button">Sair</button>
@@ -254,15 +258,58 @@
             </div>
 
             <div>
-              <label class="small">Orçamento líquido</label>
-              <input class="input" id="f_budget" type="number" step="0.01" />
+              <label>Execução</label>
+              <select class="input" id="f_exec">
+                <option value="Presencial">Presencial</option>
+                <option value="Remoto">Remoto</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Horas de treinamento</label>
+              <input class="input" id="f_train_hours" type="number" step="0.25" min="0" placeholder="Ex: 4" />
+            </div>
+
+            <div>
+              <label>Valor bruto</label>
+              <input class="input" id="f_gross" type="text" inputmode="decimal" placeholder="Ex: 5367,86" />
+            </div>
+
+            <div>
+              <label>Imposto sobre despesa (%)</label>
+              <input class="input" id="f_tax" type="text" inputmode="decimal" placeholder="Ex: 18,65" />
+            </div>
+
+            <div>
+              <label>Orçamento líquido (auto)</label>
+              <input class="input" id="f_budget" placeholder="Calculado automaticamente" disabled />
             </div>
 
             <div>
               <label class="small">Realizado</label>
-              <input class="input" id="f_real" type="number" step="0.01" />
+              <input class="input" id="f_real" type="text" inputmode="decimal" placeholder="Ex: 3.542,57" />
             </div>
           </div>
+
+          <details class="card" style="padding:12px; margin-top:12px; border-radius:16px;">
+            <summary class="small" style="cursor:pointer;">Tempo adicional (opcional)</summary>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+              <div id="timePresencialFields">
+                <label>Horas de treinamento (presencial)</label>
+                <input class="input" id="f_travel_hours" type="number" step="0.25" min="0" placeholder="Ex: 6" />
+
+                <label>Dias na fazenda (presencial)</label>
+                <input class="input" id="f_on_site_days" type="number" step="0.5" min="0" placeholder="Ex: 2" />
+              </div>
+
+              <div id="timeRemotoFields">
+                <label>Horas de treinamento (remoto)</label>
+                <input class="input" id="f_remote_hours" type="number" step="0.25" min="0" placeholder="Ex: 3" />
+                <div class="small" style="margin-top:8px;">Dica: use isso quando execução = Remoto.</div>
+              </div>
+            </div>
+          </details>
 
          <div class="small" style="margin-top:10px;">
             Se você cadastrar/selecionar a fazenda na aba <b>Fazenda</b>, eu preencho Nome/Cidade/UF e guardo o <b>farm_id</b>.
